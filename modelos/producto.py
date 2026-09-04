@@ -1,28 +1,29 @@
+# Clase Producto
+
 class Producto:
     def __init__(self, codigo: str, nombre: str, precio: float, stock: int):
+        if not codigo or not nombre:
+            raise ValueError("Código y nombre no pueden estar vacíos.")
+        if precio <= 0:
+            raise ValueError("El precio debe ser mayor a cero.")
+        if stock < 0:
+            raise ValueError("El stock no puede ser negativo.")
+
         self.codigo = codigo
         self.nombre = nombre
         self.precio = precio
         self.stock = stock
 
-    @property
-    def stock(self) -> int:
-        return self._stock
-
-    @stock.setter
-    def stock(self, valor: int):
-        if valor < 0:
-            raise ValueError("El stock no puede ser negativo.")
-        self._stock = valor
-
     def vender(self, cantidad: int):
+        """Disminuye el stock solo si la cantidad es válida."""
         if cantidad <= 0:
-            raise ValueError("La cantidad a vender debe ser mayor a cero.")
-        if cantidad > self._stock:
+            raise ValueError("La cantidad debe ser mayor a cero.")
+        if cantidad > self.stock:
             raise ValueError("Stock insuficiente.")
-        self._stock -= cantidad
+        self.stock -= cantidad
 
-    def a_diccionario(self) -> dict:
+    def convertir_a_diccionario(self):
+        """Convierte el objeto en un diccionario compatible con JSON."""
         return {
             "codigo": self.codigo,
             "nombre": self.nombre,
@@ -30,11 +31,12 @@ class Producto:
             "stock": self.stock
         }
 
-    @classmethod
-    def de_diccionario(cls, datos: dict) -> 'Producto':
-        return cls(
-            codigo=datos["codigo"],
-            nombre=datos["nombre"],
-            precio=float(datos["precio"]),
-            stock=int(datos["stock"])
+    @staticmethod
+    def desde_diccionario(data: dict):
+        """Reconstruye un Producto desde un diccionario JSON."""
+        return Producto(
+            data["codigo"],
+            data["nombre"],
+            data["precio"],
+            data["stock"]
         )

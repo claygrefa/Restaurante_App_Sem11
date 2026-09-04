@@ -4,113 +4,77 @@ from modelos.venta import Venta
 from servicios.archivo_servicio import ArchivoServicio
 
 class Restaurante:
-    """
-    Servicio principal que administra las colecciones de objetos, las reglas de negocio
-    y la coordinación con la capa de persistencia.
-    """
+
     def __init__(self):
-        self._productos: list[Producto] = []
-        self._usuarios: list[Usuario] = []
-        self._ventas: list[Venta] = []
-        self.cargar_datos()  # Carga inicial al instanciar el servicio
+        self.archivo = ArchivoServicio()
 
-    def cargar_datos(self):
-        """Recupera los datos de los tres archivos JSON al iniciar la aplicación."""
-        prods_json = ArchivoServicio.cargar_json("productos.json")
-        self._productos = [Producto.de_diccionario(p) for p in prods_json]
+        self._productos = [Producto.desde_diccionario(p)
+                           for p in self.archivo.cargar("datos/productos.json")]
 
-        usrs_json = ArchivoServicio.cargar_json("usuarios.json")
-        self._usuarios = [Usuario.de_diccionario(u) for u in usrs_json]
+        self._usuarios = [Usuario.desde_diccionario(u)
+                          for u in self.archivo.cargar("datos/usuarios.json")]
 
-        ventas_json = ArchivoServicio.cargar_json("ventas.json")
-        self._ventas = [Venta.de_diccionario(v) for v in ventas_json]
+        self._ventas = [Venta.desde_diccionario(v)
+                        for v in self.archivo.cargar("datos/ventas.json")]
 
-    def guardar_productos(self):
-        """Actualiza el archivo productos.json con el estado actual."""
-        datos = [p.a_diccionario() for p in self._productos]
-        ArchivoServicio.guardar_json("productos.json", datos)
+    def buscar_producto(self, codigo: str):
+        for p in self._productos:
+            if p.codigo == codigo:
+                return p
+        return None
 
-    def guardar_usuarios(self):
-        """Actualiza el archivo usuarios.json con el estado actual."""
-        datos = [u.a_diccionario() for u in self._usuarios]
-        ArchivoServicio.guardar_json("usuarios.json", datos)
+    def buscar_usuario(self, identificacion: str):
+        for u in self._usuarios:
+            if u.identificacion == identificacion:
+                return u
+        return None
 
-    def guardar_ventas(self):
-        """Actualiza el archivo ventas.json con el registro de operaciones."""
-        datos = [v.a_diccionario() for v in self._ventas]
-        ArchivoServicio.guardar_json("ventas.json", datos)
-
-    def registrar_usuario(self, identificacion: str, nombre: str, correo: str) -> bool:
-        """Registra un nuevo usuario si no existe duplicado y guarda los cambios."""
-        if any(u.identificacion == identificacion for u in self._usuarios):
-            return False
-        usuario = Usuario(identificacion, nombre, correo)
-        self._usuarios.append(usuario)
-        self.guardar_usuarios()
-        return True
-
-    def registrar_producto(self, codigo: str, nombre: str, precio: float, stock: int) -> bool:
-        """Registra un nuevo producto si el código es único y guarda los cambios."""
-        if any(p.codigo == codigo for p in self._productos):
-            return False
-        producto = Producto(codigo, nombre, precio, stock)
+    def registrar_producto(self, producto: Producto):
         self._productos.append(producto)
         self.guardar_productos()
-        return True
 
-    def buscar_usuario(self, identificacion: str) -> Usuario | None:
-        """Busca y retorna un objeto Usuario según su identificación."""
-        for usuario in self._usuarios:
-            if usuario.identificacion == identificacion:
-                return usuario
-        return None
+    def registrar_usuario(self, usuario: Usuario):
+        self._usuarios.append(usuario)
+        self.guardar_usuarios()
 
-    def buscar_producto(self, codigo: str) -> Producto | None:
-        """Busca y retorna un objeto Producto según su código."""
-        for producto in self._productos:
-            if producto.codigo == codigo:
-                return producto
-        return None
-
-    def vender_producto(self, codigo_producto: str, identificacion_usuario: str, cantidad: int) -> bool:
-        """
-        Ejecuta la regla de negocio de venta: valida existencia, stock disponible,
-        registra la venta en la colección, reduce el stock y persiste ambos archivos afectados.
-        """
+    def vender_producto(self, codigo_producto: str, identificacion_usuario: str, cantidad: int):
         usuario = self.buscar_usuario(identificacion_usuario)
         producto = self.buscar_producto(codigo_producto)
 
-        # Validaciones requeridas
         if usuario is None or producto is None:
+            print("Error: usuario o producto no existen.")
             return False
 
-        if cantidad <= 0 or producto.stock < cantidad:
+        if cantidad <= 0:
+            print("Error: cantidad inválida.")
             return False
 
-        # Creación y registro de la venta
+        if producto.stock < cantidad:
+            print("Error: stock insuficiente.")
+            return False
+
         venta = Venta(usuario.identificacion, producto.codigo, cantidad)
         self._ventas.append(venta)
-        producto.vender(cantidad)  # Disminuye el stock de forma segura
 
-        # Persistir colecciones modificadas (ventas y productos)
-        self.guardar_ventas()
+        producto.vender(cantidad)
+
         self.guardar_productos()
+        self.guardar_ventas()
+
+        print("Venta registrada correctamente.")
         return True
 
-    def consultar_ventas_usuario(self, identificacion_usuario: str) -> list[Venta]:
-        """Fringa y devuelve las ventas asociadas a una identificación de usuario específica."""
-        ventas_usuario: list[Venta] = []
-        for venta in self._ventas:
-            if venta.usuario_id == identificacion_usuario:
-                ventas_usuario.append(venta)
-        return ventas_usuario
+    def ventas_por_usuario(self, identificacion: str):
+        return [v for v in self._ventas if v.usuario_id == identificacion]
 
-    @property
-    def productos(self):
-        """Retorna la lista de productos del sistema."""
-        return self._productos
+    def guardar_productos(self):
+        datos = [p.convertir_a_diccionario() for p in self._productos]
+        self.archivo.guardar("datos/productos.json", datos)
 
-    @property
-    def usuarios(self):
-        """Retorna la lista de usuarios registrados."""
-        return self._usuarios
+    def guardar_usuarios(self):
+        datos = [u.convertir_a_diccionario() for u in self._usuarios]
+        self.archivo.guardar("datos/usuarios.json", datos)
+
+    def guardar_ventas(self):
+        datos = [v.convertir_a_diccionario() for v in self._ventas]
+        self.archivo.guardar("datos/ventas.json", datos)
