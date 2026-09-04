@@ -126,7 +126,7 @@ registrar productos, usuarios, vender productos y consultar ventas.
 ## Pruebas realizadas
 
 1. Ejecutar `main.py`.
-2. Registrar un usuario (por ejemplo `1750000001 - Ana Perez`).
+2. Registrar un usuario (por ejemplo `1750000001 - LUIS CERDA`).
 3. Registrar un producto con stock (por ejemplo `HAM01 - Hamburguesa`,
    precio 3.50, stock 10).
 4. Realizar una venta de 2 unidades -> el stock queda en 8.
@@ -139,12 +139,4 @@ registrar productos, usuarios, vender productos y consultar ventas.
 11. Confirmar que la operacion sea rechazada sin alterar el stock ni
     los archivos.
 
-## Mejoras incorporadas en la Semana 11
 
-- Se agrego el atributo `stock` a `Producto`.
-- Se creo la clase `Venta`.
-- Se implemento `vender_producto()` en el servicio `Restaurante`.
-- Se agrego la consulta `consultar_ventas_por_usuario()`.
-- Se completo la persistencia JSON de productos, usuarios y ventas.
-- Se ampliaron las excepciones controladas.
-- Se actualizo el README con las nuevas responsabilidades.
