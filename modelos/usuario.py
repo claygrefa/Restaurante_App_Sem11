@@ -2,7 +2,7 @@
 # Clase Usuario: representa a la persona registrada que puede
 # realizar una compra dentro del restaurante.
 # Se conserva la validacion de semanas anteriores y se agrega
-# la persistencia JSON pedida en la Semana 11.
+
 
 
 class Usuario:

@@ -79,9 +79,7 @@ def opcion_listar_usuarios(restaurante: Restaurante) -> None:
 
 
 def opcion_vender_producto(restaurante: Restaurante) -> None:
-    # Operacion PRINCIPAL de la Semana 11.
-    # Sigue el flujo esperado indicado por el profesor:
-    #  Usuario selecciona la opcion vender
+
     #    -> main.py solicita identificacion, producto y cantidad
     #    -> Restaurante busca usuario y producto
     #    -> Se valida cantidad y stock

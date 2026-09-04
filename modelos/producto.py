@@ -1,8 +1,6 @@
 # modelos/producto.py
 # Clase Producto: representa cada producto del restaurante.
 # Guarda su codigo, nombre, precio y stock disponible.
-# Se mantiene la funcionalidad de semanas anteriores y se agrega el stock
-# como pide la Semana 11.
 
 
 class Producto:
