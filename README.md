@@ -126,7 +126,7 @@ registrar productos, usuarios, vender productos y consultar ventas.
 ## Pruebas realizadas
 
 1. Ejecutar `main.py`.
-2. Registrar un usuario (por ejemplo `1750000001 - Ana Perez`).
+2. Registrar un usuario (por ejemplo `1750000001 - LUIS CERDA`).
 3. Registrar un producto con stock (por ejemplo `HAM01 - Hamburguesa`,
    precio 3.50, stock 10).
 4. Realizar una venta de 2 unidades -> el stock queda en 8.
