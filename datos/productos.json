@@ -6,13 +6,13 @@
         "stock": 8
     },
     {
-        "codigo": "001",
+        "codigo": "CEV002",
         "nombre": "CEVICHE",
         "precio": 3.0,
         "stock": 2
     },
     {
-        "codigo": "002",
+        "codigo": "PA003",
         "nombre": "PAPAS",
         "precio": 2.5,
         "stock": 30

@@ -1,22 +1,7 @@
 [
     {
-        "identificacion": "U001",
-        "nombre": "Carlos Mena"
-    },
-    {
-        "identificacion": "U002",
-        "nombre": "Ana Torres"
-    },
-    {
-        "identificacion": "1722808326",
-        "nombre": "luis cerda"
-    },
-    {
-        "identificacion": "1228028632",
-        "nombre": "LUIS CERDA"
-    },
-    {
-        "identificacion": "123456789",
-        "nombre": "LUIS CERDA"
+        "identificacion": "1750000001",
+        "nombre": "LUIS CERDA",
+        "correo": "ana@correo.com"
     }
 ]
